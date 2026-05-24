@@ -23,9 +23,14 @@ public class CConfigReader
 		StreamReader Stream = new StreamReader(Name);
 		string Json = Stream.ReadToEnd();
 
-		CConfig Config = JsonConvert.DeserializeObject<CConfig>(Json);
-
+		CConfig? Config = JsonConvert.DeserializeObject<CConfig>(Json);
+		Verify(Config != null, "Failed to read config!");
+		
 		Token = Config.Token;
 		Prefix = Config.Prefix;
+		
+		CLog.Info("Parsed config");
+		CLog.Info($"Token: {Token}");
+		CLog.Info($"Prefix: {Prefix}");
 	}
 }

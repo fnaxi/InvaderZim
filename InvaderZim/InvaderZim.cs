@@ -3,6 +3,7 @@
 using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.EventArgs;
+using InvaderZim.Commands;
 using InvaderZim.Config;
 
 namespace InvaderZim;
@@ -30,10 +31,28 @@ public class CInvaderZim
 		Client =  new DiscordClient(DisConfig);
 		Client.Ready += ClientOnReady;
 
-		await Client.ConnectAsync();
+		SetupCommands(Config.Prefix);
 		
-		// Run the bot until exit
+		await Client.ConnectAsync();
 		await Task.Delay(-1);
+	}
+
+	private static void SetupCommands(string Prefix)
+	{
+		CommandsNextConfiguration CommandsConfig = new CommandsNextConfiguration()
+		{
+			StringPrefixes = [Prefix],
+			
+			// TODO: Revisit this
+			EnableMentionPrefix = false,
+			EnableDms = false,
+			
+			EnableDefaultHelp = false
+		};
+		Commands = Client.UseCommandsNext(CommandsConfig);
+
+		Commands.RegisterCommands<CTestCommands>();
+		CLog.Info("Registered CTestCommands");
 	}
 
 	private static Task ClientOnReady(DiscordClient sender, ReadyEventArgs args)
