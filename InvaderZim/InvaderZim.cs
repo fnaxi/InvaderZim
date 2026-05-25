@@ -43,8 +43,7 @@ public class CInvaderZim
 		{
 			StringPrefixes = [Prefix],
 			
-			// TODO: Revisit this
-			EnableMentionPrefix = false,
+			EnableMentionPrefix = true,
 			EnableDms = false,
 			
 			EnableDefaultHelp = false
@@ -53,9 +52,12 @@ public class CInvaderZim
 
 		Commands.RegisterCommands<CTestCommands>();
 		CLog.Info("Registered CTestCommands");
+		
+		Commands.RegisterCommands<CModerationCommands>();
+		CLog.Info("Registered CModerationCommands");
 	}
 
-	private static Task ClientOnReady(DiscordClient sender, ReadyEventArgs args)
+	private static Task ClientOnReady(DiscordClient Sender, ReadyEventArgs Args)
 	{
 		return Task.CompletedTask;
 	}
