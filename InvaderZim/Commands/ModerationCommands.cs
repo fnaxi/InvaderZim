@@ -72,9 +72,114 @@ public class CModerationCommands : BaseCommandModule
 		};
 		await Context.RespondAsync(Embed);
 	}
-	
-	// TODO: purge(message amount), prune(time) / a channel argument is optional
-	
+
+	[Command("purge")]
+	[Description("Purges specified messages count in a channel")]
+	public async Task Purge(CommandContext Context,
+		[Description("Count of the messages to purge")] Int32 MessageCount,
+		[Description("The channel to purge messages in")] DiscordChannel? Channel = null)
+	{
+		if (!CanModerate(Context))
+		{
+			await NoRights(Context);
+			return;
+		}
+
+		bool bContextChannel = IsContextChannel(Context, ref Channel);
+		if (bContextChannel)
+		{
+			// Include a message that triggered the execution
+			MessageCount++;
+		}
+		
+		if (MessageCount is 0 or > 100)
+		{
+			if (bContextChannel)
+			{
+				await Context.Message.DeleteAsync();
+			}
+			else
+			{
+				await Context.RespondAsync($"Provide a valid message count, Earth pig! {CEmoji.ZimAngry}");
+			}
+			return;
+		}
+
+		IReadOnlyList<DiscordMessage>? Messages = await Channel.GetMessagesAsync(MessageCount);
+		List<DiscordMessage> MessagesToDelete = bContextChannel ? Messages.ToList() : Messages.Where(m => m.Id != Context.Message.Id).ToList();
+		
+		if (MessagesToDelete.Count != 0)
+		{
+			// TODO: handle messages older than 14 days
+			Debug.Assert(Context.Member != null);
+			await Channel.DeleteMessagesAsync(MessagesToDelete, $"Purge command executed by {Context.Member.DisplayName}");
+
+			DiscordMessage Response = await Context.RespondAsync($"Successfully deleted {MessagesToDelete.Count} messages in {Channel.Mention} channel {CEmoji.GirBlep}");
+			if (bContextChannel)
+			{
+				await Task.Delay(TimeSpan.FromSeconds(3));
+				await Response.DeleteAsync();
+			}
+		}
+		else
+		{
+			// TODO: Response
+		}
+	}
+
+	[Command("prune")]
+	[Description("Prunes messages up to a specific age in a channel (max 100 per request)")]
+	public async Task Prune(CommandContext Context,
+		[Description("Age of messages to purge (e.g., 1h30m, 10m5s)")] string Time,
+		[Description("The channel to prune messages in")] DiscordChannel? Channel = null)
+	{
+		if (!CanModerate(Context))
+		{
+			await NoRights(Context);
+			return;
+		}
+
+		bool bContextChannel = IsContextChannel(Context, ref Channel);
+
+		DateTimeOffset CutOff = DateTimeOffset.UtcNow.Subtract(ParseTime(Time));
+		DateTimeOffset FourteenDaysAgo = DateTimeOffset.UtcNow.AddDays(-14);
+		if (CutOff < FourteenDaysAgo)
+		{
+			DiscordMessage Response = await Context.RespondAsync($"I cannot delete messages older than 14 days due to Discord restrictions {CEmoji.GirBlep}");
+			if (bContextChannel)
+			{
+				await Task.Delay(TimeSpan.FromSeconds(3));
+				await Response.DeleteAsync();
+				await Context.Message.DeleteAsync();
+				return;
+			}
+		}
+
+		IReadOnlyList<DiscordMessage>? Messages = await Channel.GetMessagesAsync(100);
+		List<DiscordMessage> MessagesToDelete = Messages
+			.Where(m => m.Id != Context.Message.Id)
+			.Where(m => m.CreationTimestamp >= CutOff).ToList();
+
+		if (MessagesToDelete.Count != 0)
+		{
+			Debug.Assert(Context.Member != null);
+			await Channel.DeleteMessagesAsync(MessagesToDelete, $"Prune command executed by {Context.Member.DisplayName}");
+
+			DiscordMessage Response = await Context.RespondAsync($"Successfully deleted {MessagesToDelete.Count} messages in {Channel.Mention} channel {CEmoji.GirBlep}");
+			if (bContextChannel)
+			{
+				await Task.Delay(TimeSpan.FromSeconds(3));
+				await Response.DeleteAsync();
+			}
+		}
+
+		// TODO: revisit this and if (CutOff < FourteenDaysAgo) condition above
+		if (bContextChannel)
+		{
+			await Context.Message.DeleteAsync();
+		}
+	}
+
 	// TODO: reap(member, reason)
 	
 	[Command("kick")]

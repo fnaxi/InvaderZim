@@ -2,6 +2,8 @@
 
 global using static InvaderZim.Commands.CCommandUtils;
 using System.Diagnostics;
+using System.Text.RegularExpressions;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.Entities;
 using InvaderZim.ID;
@@ -24,9 +26,9 @@ public class CCommandUtils
 	
 	public static bool CanModerate(CommandContext Context)
 	{
-		bool bAdmin = false; // TODO: (Context.Member.Permissions & Permissions.Administrator) != 0
-
 		Debug.Assert(Context.Member != null);
+		bool bAdmin = Context.Member.Permissions.HasFlag(Permissions.Administrator);
+
 		return bAdmin || Context.Member.Roles.Any(role => role.Id is CRole.Admin or CRole.Moderator);
 	}
 
@@ -40,10 +42,43 @@ public class CCommandUtils
 		Debug.Assert(Context.Member != null);
 		if (Member.IsBot || Member.Id == Context.Client.CurrentUser.Id || Member.Id == Context.Member.Id)
 		{
-			await Context.RespondAsync(RandomString(CQuote.BotOrSelfBan));
+			await Context.RespondAsync($"{RandomString(CQuote.BotOrSelfBan)} {CEmoji.GirDance}");
 			return true;
 		}
 
 		return false;
+	}
+
+	public static bool IsContextChannel(CommandContext Context, ref DiscordChannel? Channel)
+	{
+		if (Channel == null)
+		{
+			Channel = Context.Channel;
+			return true;
+		}
+		return false;
+	}
+	
+	public static TimeSpan ParseTime(string Input)
+	{
+		TimeSpan Time = TimeSpan.Zero;
+		
+		MatchCollection Matches = Regex.Matches(Input.ToLower(), @"(\d+)([dhms])");
+		foreach (Match CurrentMatch in Matches)
+		{
+			Int32 Value = Int32.Parse(CurrentMatch.Groups[1].Value);
+			string Unit = CurrentMatch.Groups[2].Value;
+
+			Time += Unit switch
+			{
+				"d" => TimeSpan.FromDays(Value),
+				"h" => TimeSpan.FromHours(Value),
+				"m" => TimeSpan.FromMinutes(Value),
+				"s" => TimeSpan.FromSeconds(Value),
+				_   => TimeSpan.Zero
+			};
+		}
+		
+		return Time;
 	}
 }

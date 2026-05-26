@@ -25,11 +25,14 @@ public class CMiscCommands : BaseCommandModule
 		};
 		// TODO: Help command
 		
+		Debug.Assert(Context.Member != null);
+		Embed.WithFooter($"Requested by {Context.Member.DisplayName}", Context.Member.AvatarUrl);
+		Embed.WithTimestamp(DateTime.UtcNow);
+		
 		await Context.RespondAsync(Embed);
 	}
 	
 	[Command("info")]
-	[Aliases("whois")]
 	[Description("Shows info about specified user")]
 	public async Task UserInfo(CommandContext Context,
 		[Description("The user to look up. Defaults to yourself if left blank")] DiscordMember? Member = null)
@@ -87,9 +90,14 @@ public class CMiscCommands : BaseCommandModule
 			Title = "Ping Status",
 			Color = YellowGreen
 		};
+		FinalEmbed.WithColor(WebsocketPing < 150 ? DiscordColor.Green : DiscordColor.Orange);
+		
 		FinalEmbed.AddField($"{CEmoji.BmoDance} Bot Latency", $"`{WebsocketPing}ms`", true);
 		FinalEmbed.AddField($"{CEmoji.Alien} Message Latency", $"`{MessagePing}ms`", true);
-		FinalEmbed.WithColor(WebsocketPing < 150 ? DiscordColor.Green : DiscordColor.Orange);
+
+		Debug.Assert(Context.Member != null);
+		FinalEmbed.WithFooter($"Requested by {Context.Member.DisplayName}", Context.Member.AvatarUrl);
+		FinalEmbed.WithTimestamp(DateTime.UtcNow);
 		
 		await Message.ModifyAsync(FinalEmbed.Build());
 	}
