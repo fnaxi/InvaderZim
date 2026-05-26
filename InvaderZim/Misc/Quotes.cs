@@ -2,17 +2,26 @@
 
 namespace InvaderZim.Misc;
 
-public class CQuote
+public static class CQuote
 {
-	public static readonly List<string> Hello = new()
-	{
+	public static readonly List<string> Hello =
+	[
 		"Hi",
 		"Hi! Obey me, or face doom!",
 		"Hey",
 		"Hello"
-	};
-	public static readonly List<string> Mention = new()
-	{
+	];
+	public static readonly List<string> Arrive =
+	[
+		"Hii", "Heyyy", "Heello"
+	];
+	public static readonly List<string> Left =
+	[
+		"Byee", "Goodbbye"
+	];
+	
+	public static readonly List<string> Mention =
+	[
 		"I’m gonna rule Earth someday, you’ll see!",
 		"Silence! I control you now!",
 		"Doom! Doom! Doom!",
@@ -83,34 +92,34 @@ public class CQuote
 		"Invader's blood marches through my veins like giant radioactive rubber pants! The pants command me. Do not ignore my veins!",
 		"Prepare your bladder for imminent release!",
 		"I am ZIM! And you will obey the fist!",
-		"LIES! BIG, FILTHY, EARTH BOY, LIES!",
-	};
-	public static readonly List<string> Waffles = new()
-	{
+		"LIES! BIG, FILTHY, EARTH BOY, LIES!"
+	];
+	public static readonly List<string> Waffles =
+	[
 		"Thanks, Earth pig!",
 		"Thanks for the waffles, Earth pig!",
 		"Guess who made WAAAAFFLES! THANKS",
 		"Thanks! These waffles are SOOOOOO addictive!"
-	};
-	public static readonly List<string> Tacos = new()
-	{
+	];
+	public static readonly List<string> Tacos =
+	[
 		"Thanks, Earth pig!",
 		"Thanks for the tacos, Earth pig!",
 		"I need tacos or I will explode! That happens to me sometimes",
 		"Thanks! These tacos are SOOOOOO addictive!"
-	};
-	public static readonly List<string> Ban = new()
-	{
+	];
+	public static readonly List<string> Ban =
+	[
 		"Worse… or better?",
 		"You’re not a freak! You’re just STUPID!",
 		"I'm an unstoppable death machine you know",
 		"I will not rest until I have taken over!",
 		"You’ll regret laughing at Zim, Earth pig!"
-	};
-	public static readonly List<string> BotOrSelfBan = new()
-	{
+	];
+	public static readonly List<string> BotOrSelfBan =
+	[
 		"You’ll regret laughing at Zim, Earth pig!",
 		"You Earth creatures are strange and smelly",
 		"Do you humans even know how ridiculous you are?"
-	};
+	];
 }

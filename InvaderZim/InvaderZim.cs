@@ -7,6 +7,7 @@ using DSharpPlus.Entities;
 using DSharpPlus.EventArgs;
 using InvaderZim.Commands;
 using InvaderZim.Config;
+using InvaderZim.ID;
 using InvaderZim.Misc;
 
 namespace InvaderZim;
@@ -35,18 +36,54 @@ public static class CInvaderZim
 		Client =  new DiscordClient(DisConfig);
 		Client.Ready += Client_OnReady;
 		Client.MessageCreated += Client_OnMessageCreated;
-
+		Client.GuildMemberAdded += Client_OnGuildMemberAdded;
+		Client.GuildMemberRemoved += Client_OnGuildMemberRemoved;
+		// TODO: Modlog (deleted/edited messages, etc.)
+		
 		SetupCommands(Config.Prefix);
 		
 		await Client.ConnectAsync();
 		await Task.Delay(-1);
 	}
 
+	private static async Task Client_OnGuildMemberAdded(DiscordClient Sender, GuildMemberAddEventArgs Args)
+	{
+		DiscordChannel RulesChannel = Args.Guild.GetChannel(CChannel.Rules);
+		
+		DiscordEmbedBuilder Embed = new DiscordEmbedBuilder()
+		{
+			Title = $"{Args.Member.DisplayName}, welcome to the server! {CEmoji.GirDress}",
+			Description = $"{RandomString(CQuote.Arrive)}, {Args.Member.Mention}! Zim is glad to see you here! Make sure to read {RulesChannel.Mention}",
+			Color = YellowGreen
+		};
+		// TODO: Embed.WithImageUrl("");
+		Embed.WithThumbnail(Args.Member.AvatarUrl);
+		Embed.WithTimestamp(DateTime.UtcNow);
+
+		DiscordChannel WelcomeChannel = Args.Guild.GetChannel(CChannel.Welcome);
+		await WelcomeChannel.SendMessageAsync(Embed);
+	}
+	
+	private static async Task Client_OnGuildMemberRemoved(DiscordClient Sender, GuildMemberRemoveEventArgs Args)
+	{
+		DiscordEmbedBuilder Embed = new DiscordEmbedBuilder()
+		{
+			Title = $"{Args.Member.DisplayName} has left the server {CEmoji.GirBlep}",
+			Description = $"{RandomString(CQuote.Left)}! Zim is sad to see you go",
+			Color = YellowGreen
+		};
+		Embed.WithThumbnail(Args.Member.AvatarUrl);
+		Embed.WithTimestamp(DateTime.UtcNow);
+
+		DiscordChannel WelcomeChannel = Args.Guild.GetChannel(CChannel.Welcome);
+		await WelcomeChannel.SendMessageAsync(Embed);
+	}
+
 	private static async Task Client_OnReady(DiscordClient Sender, ReadyEventArgs Args)
 	{
 		CLog.Info("Zim is ready!");
 		
-		#if TODO
+		// TODO: remove later
 		DiscordEmbedBuilder Embed = new DiscordEmbedBuilder()
 		{
 			Title = "Zim is eating waffles again!",
@@ -56,7 +93,6 @@ public static class CInvaderZim
 		
 		DiscordChannel Channel = await Sender.GetChannelAsync(CChannel.Test);
 		await Channel.SendMessageAsync(Embed);
-		#endif
 		
 		await StartStatusRotation(Sender);
 	}
@@ -68,15 +104,14 @@ public static class CInvaderZim
 		if (Args.Message.MentionedUsers.Any(uz => uz.Id == Sender.CurrentUser.Id))
 			// TODO: Bot should react to mentioning "zim" in a message
 		{
-			string MsgContent = Args.Message.Content;
-			if (MsgContent.Contains("fuck") || MsgContent.Contains("shut up") || MsgContent.Contains("touch yourself") || MsgContent.Contains("touch your body") ||
-			    MsgContent.Contains("touch urself") || MsgContent.Contains("stupud") || MsgContent.Contains("stupid") || MsgContent.Contains("shit") )
-			{
-				await Args.Message.DeleteAsync();
-			}
-			else if (Regex.IsMatch(MsgContent, @"\b(hi|hey|hello)\b", RegexOptions.IgnoreCase))
+			string Message = Args.Message.Content;
+			if (Regex.IsMatch(Message, @"\b(hi|hey|hello)\b", RegexOptions.IgnoreCase))
 			{
 				await Args.Message.RespondAsync(RandomString(CQuote.Hello));
+			}
+			else
+			{
+				await Args.Message.RespondAsync(RandomString(CQuote.Mention));
 			}
 		}
 	}
@@ -108,13 +143,12 @@ public static class CInvaderZim
 			EnableDefaultHelp = false
 		};
 		Commands = Client.UseCommandsNext(CommandsConfig);
+		Commands.CommandErrored += Commands_OnCommandErrored;
 
 		RegisterCommandModule<CMiscCommands>();
 		RegisterCommandModule<CModerationCommands>();
 		RegisterCommandModule<CEntertainCommands>();
 		RegisterCommandModule<CTestCommands>();
-
-		Commands.CommandErrored += Commands_OnCommandErrored;
 	}
 	
 	private static async Task StartStatusRotation(DiscordClient Sender)

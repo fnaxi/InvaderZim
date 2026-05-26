@@ -40,7 +40,7 @@ public class CCommandUtils
 	public static async Task<bool> IsTargetingBotOrSelf(CommandContext Context, DiscordMember Member)
 	{
 		Debug.Assert(Context.Member != null);
-		if (Member.IsBot || Member.Id == Context.Client.CurrentUser.Id || Member.Id == Context.Member.Id)
+		if (Member.Id == Context.Client.CurrentUser.Id || Member.Id == Context.Member.Id)
 		{
 			await Context.RespondAsync($"{RandomString(CQuote.BotOrSelfBan)} {CEmoji.GirDance}");
 			return true;
@@ -59,7 +59,7 @@ public class CCommandUtils
 		return false;
 	}
 	
-	public static TimeSpan ParseTime(string Input)
+	public static TimeSpan ParseTime(string Input) // TODO: fix time should be passed in ""
 	{
 		TimeSpan Time = TimeSpan.Zero;
 		

@@ -18,7 +18,7 @@ public class CModerationCommands : BaseCommandModule
 	[Description("Mutes the specified member")]
 	public async Task Mute(CommandContext Context, 
 		[Description("The member to mute")] DiscordMember Member,
-		[Description("Time of the mute in minutes")] UInt32 Duration = 30,
+		[Description("Time of the mute in minutes")] UInt32 Duration = 30, // TODO: pass in format 1h30m15s
 		[Description("The reason of the mute")] string Reason = "No reason provided")
 	{
 		if (!CanModerate(Context))
@@ -29,7 +29,6 @@ public class CModerationCommands : BaseCommandModule
 
 		if (IsTargetingBotOrSelf(Context, Member).Result) return;
 		
-		// TODO: replace with format 1d6h2m5s
 		DateTimeOffset TimeoutTime = DateTimeOffset.UtcNow.AddMinutes(Duration);
 		await Member.TimeoutAsync(TimeoutTime, Reason);
 		
@@ -301,8 +300,7 @@ public class CModerationCommands : BaseCommandModule
 
 		if (IsTargetingBotOrSelf(Context, Member).Result) return;
 		
-		// TODO: Actual kick
-		// await Member.RemoveAsync(Reason);
+		await Member.RemoveAsync(Reason);
 		
 		Debug.Assert(Context.Member != null);
 		DiscordEmbedBuilder Embed = new DiscordEmbedBuilder()
@@ -329,9 +327,8 @@ public class CModerationCommands : BaseCommandModule
 		}
 
 		if (IsTargetingBotOrSelf(Context, Member).Result) return;
-		
-		// TODO: Actual ban
-		// await Context.Guild.BanMemberAsync(Member);
+
+		await Context.Guild.BanMemberAsync(Member);
 		
 		Debug.Assert(Context.Member != null);
 		DiscordEmbedBuilder Embed = new DiscordEmbedBuilder()
