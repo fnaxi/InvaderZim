@@ -1,9 +1,9 @@
 // CopyRight https://github.com/fnaxi. All Rights Reserved.
 
-global using static InvaderZim.Utils.CUtils;
+global using static InvaderZim.Misc.CUtils;
 using DSharpPlus.Entities;
 
-namespace InvaderZim.Utils;
+namespace InvaderZim.Misc;
 
 public static class CUtils
 {
