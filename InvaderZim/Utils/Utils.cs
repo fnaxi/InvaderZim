@@ -1,11 +1,11 @@
 // CopyRight https://github.com/fnaxi. All Rights Reserved.
 
-global using static InvaderZim.Misc.CUtils;
+global using static InvaderZim.Utils.CUtils;
 using DSharpPlus.Entities;
 
-namespace InvaderZim.Misc;
+namespace InvaderZim.Utils;
 
-public class CUtils
+public static class CUtils
 {
 	/** Inverts String.IsNullOrWhiteSpace for cleaner checks. */
 	public static bool IsTextValid(string InText)
@@ -18,7 +18,7 @@ public class CUtils
 		return InList1.Concat(InList2).ToList();
 	}
 
-	public static DiscordColor YellowGreen = new DiscordColor("#9ACD32");
+	public static DiscordColor YellowGreen = new("#9ACD32");
 	
 	private static readonly Random RandomSeed = new();
 	public static string RandomString(List<string> Options)

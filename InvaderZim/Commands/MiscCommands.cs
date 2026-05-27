@@ -87,7 +87,7 @@ public class CMiscCommands : BaseCommandModule
 		DiscordEmbedBuilder FinalEmbed = new DiscordEmbedBuilder()
 		{
 			Title = "Ping Status",
-			Color = WebsocketPing < 150 ? DiscordColor.Green : DiscordColor.Orange
+			Color = WebsocketPing < 500 ? (WebsocketPing < 150 ? DiscordColor.Green : DiscordColor.Orange) : DiscordColor.Red
 		};
 		
 		FinalEmbed.AddField($"{CEmoji.BmoDance} Bot Latency", $"`{WebsocketPing}ms`", true);

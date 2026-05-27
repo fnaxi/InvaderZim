@@ -19,7 +19,7 @@ public enum ELogVerbosity
 	Info = 3,
 	
 	/** Prints a verbose message to console and log file. */
-	Verbose = 4,
+	Debug = 4,
 	
 	/** Enable all logging verbosity. */
 	All = 5
@@ -46,7 +46,7 @@ public static class CLog
 	public static void Error(string Text) { Log(ELogVerbosity.Error, Text); }
 	public static void Warning(string Text) { Log(ELogVerbosity.Warning, Text); }
 	public static void Info(string Text) { Log(ELogVerbosity.Info, Text); }
-	public static void Verbose(string Text) { Log(ELogVerbosity.Verbose, Text); }
+	public static void Debug(string Text) { Log(ELogVerbosity.Debug, Text); }
 
 	public static void Status(Int32 ExitCode, string Text)
 	{
@@ -60,7 +60,7 @@ public static class CLog
 		
 		if (!VerbosityInfo.TryGetValue(LogVerbosity, out SLogVerbosityInfo CurrentVerbosityInfo))
 		{
-			Debug.Assert(false);
+			System.Diagnostics.Debug.Assert(false);
 		}
 		
 		string Timestamp = DateTimeOffset.Now.ToString("yyyy-MM-dd HH:mm:ss zzz");
@@ -87,6 +87,6 @@ public static class CLog
 		{ ELogVerbosity.Error,   new SLogVerbosityInfo {Tag = "Error", TextColor = ConsoleColor.Red} },
 		{ ELogVerbosity.Warning, new SLogVerbosityInfo {Tag = "Warn ",  TextColor = ConsoleColor.Yellow} },
 		{ ELogVerbosity.Info,    new SLogVerbosityInfo {Tag = "Info ",   TextColor = ConsoleColor.DarkCyan} },
-		{ ELogVerbosity.Verbose, new SLogVerbosityInfo {Tag = "Info ",   TextColor = ConsoleColor.Cyan} }
+		{ ELogVerbosity.Debug,   new SLogVerbosityInfo {Tag = "Debug",   TextColor = ConsoleColor.Magenta} }
 	};
 }

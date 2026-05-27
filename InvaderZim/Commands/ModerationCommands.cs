@@ -184,10 +184,8 @@ public class CModerationCommands : BaseCommandModule
 	[Command("reap")]
 	[Description("Grim-reaps the specified member. Automatically issues a ban after reaching 3 warnings")]
 	public async Task Warn(CommandContext Context,
-		[Description("The member to grim-reap")]
-		DiscordMember Member,
-		[Description("The reason of the grim-reap")]
-		string Reason = "No reason provided")
+		[Description("The member to grim-reap")] DiscordMember Member,
+		[Description("The reason of the grim-reap")] string Reason = "No reason provided")
 	{
 		if (!CanModerate(Context))
 		{

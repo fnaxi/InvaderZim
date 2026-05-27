@@ -24,6 +24,6 @@ public static class CChannel
 	/*----------------------------------------------------------------------------
 		Voice Channels
 	----------------------------------------------------------------------------*/
-	public const UInt64 CreateVoice = 1507692246710091907;
+	public const UInt64 CreateVoice = 1509248978087317626;
 	public const UInt64 AFK = 1507653496558714883;
 }

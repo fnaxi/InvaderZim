@@ -30,20 +30,63 @@ public static class CInvaderZim
 			
 			Token = Config.Token,
 			TokenType = TokenType.Bot,
-			AutoReconnect = true
+			
+			AutoReconnect = true,
+			
+			// TODO: Replace with true later
+			LogUnknownEvents = false
 		};
 		
 		Client =  new DiscordClient(DisConfig);
+		
 		Client.Ready += Client_OnReady;
-		Client.MessageCreated += Client_OnMessageCreated;
+		Client.GuildDownloadCompleted += Client_OnGuildDownloadCompleted;
 		Client.GuildMemberAdded += Client_OnGuildMemberAdded;
 		Client.GuildMemberRemoved += Client_OnGuildMemberRemoved;
+		Client.MessageCreated += Client_OnMessageCreated;
+		Client.VoiceStateUpdated += Client_OnVoiceStateUpdated;
+		
 		// TODO: Modlog (deleted/edited messages, etc.)
 		
 		SetupCommands(Config.Prefix);
 		
 		await Client.ConnectAsync();
 		await Task.Delay(-1);
+	}
+	
+	private static async Task Client_OnReady(DiscordClient Sender, ReadyEventArgs Args)
+	{
+		CLog.Info("Zim is ready!");
+		
+		// TODO: remove later
+		{
+			DiscordEmbedBuilder Embed = new DiscordEmbedBuilder()
+			{
+				Title = "Zim is eating waffles again!",
+				Description = "Prepare your bladder for imminent release!",
+				Color = YellowGreen
+			};
+
+			DiscordChannel Channel = await Sender.GetChannelAsync(CChannel.Test);
+			await Channel.SendMessageAsync(Embed);
+		}
+		
+		await StartStatusRotation(Sender);
+	}
+	
+	private static async Task Client_OnGuildDownloadCompleted(DiscordClient Sender, GuildDownloadCompletedEventArgs Args)
+	{
+		foreach (DiscordGuild? Guild in Sender.Guilds.Values)
+		{
+			if (Guild == null) continue;
+
+			foreach (DiscordChannel? Channel in Guild.Channels.Values)
+			{
+				if (Channel == null || Channel.Type != ChannelType.Voice || !IsTempVoice(Channel)) continue;
+
+				await Channel.DeleteAsync();
+			}
+		}
 	}
 
 	private static async Task Client_OnGuildMemberAdded(DiscordClient Sender, GuildMemberAddEventArgs Args)
@@ -53,7 +96,7 @@ public static class CInvaderZim
 		DiscordEmbedBuilder Embed = new DiscordEmbedBuilder()
 		{
 			Title = $"{Args.Member.DisplayName}, welcome to the server! {CEmoji.GirDress}",
-			Description = $"{RandomString(CQuote.Arrive)}, {Args.Member.Mention}! Zim is glad to see you here! Make sure to read {RulesChannel.Mention}",
+			Description = $"{RandomString(CQuote.Arrive)}, {Args.Member.Mention}! Zim is glad to see you here! \n Make sure to read the {RulesChannel.Mention}",
 			Color = YellowGreen
 		};
 		// TODO: Embed.WithImageUrl("");
@@ -78,34 +121,15 @@ public static class CInvaderZim
 		DiscordChannel WelcomeChannel = Args.Guild.GetChannel(CChannel.Welcome);
 		await WelcomeChannel.SendMessageAsync(Embed);
 	}
-
-	private static async Task Client_OnReady(DiscordClient Sender, ReadyEventArgs Args)
-	{
-		CLog.Info("Zim is ready!");
-		
-		// TODO: remove later
-		DiscordEmbedBuilder Embed = new DiscordEmbedBuilder()
-		{
-			Title = "Zim is eating waffles again!",
-			Description = "Prepare your bladder for imminent release!",
-			Color = YellowGreen
-		};
-		
-		DiscordChannel Channel = await Sender.GetChannelAsync(CChannel.Test);
-		await Channel.SendMessageAsync(Embed);
-		
-		await StartStatusRotation(Sender);
-	}
 	
 	private static async Task Client_OnMessageCreated(DiscordClient Sender, MessageCreateEventArgs Args)
 	{
 		if (Args.Author.IsBot) return;
-		
+
 		if (Args.Message.MentionedUsers.Any(uz => uz.Id == Sender.CurrentUser.Id))
 			// TODO: Bot should react to mentioning "zim" in a message
 		{
-			string Message = Args.Message.Content;
-			if (Regex.IsMatch(Message, @"\b(hi|hey|hello)\b", RegexOptions.IgnoreCase))
+			if (Regex.IsMatch(Args.Message.Content, @"\b(hi|hey|hello)\b", RegexOptions.IgnoreCase))
 			{
 				await Args.Message.RespondAsync(RandomString(CQuote.Hello));
 			}
@@ -116,6 +140,27 @@ public static class CInvaderZim
 		}
 	}
 	
+	private const string TempVoiceEmoji = "🜋";
+	private static async Task Client_OnVoiceStateUpdated(DiscordClient Sender, VoiceStateUpdateEventArgs Args)
+	{
+		DiscordGuild Guild = Args.Guild;
+		
+		DiscordChannel CreateVoiceChannel = Guild.GetChannel(CChannel.CreateVoice);
+		if (Args.After?.Channel != null && Args.After.Channel.Id == CChannel.CreateVoice)
+		{
+			DiscordMember Member = await Guild.GetMemberAsync(Args.User.Id);
+
+			string Name = $"{TempVoiceEmoji} {Member.DisplayName}";
+			DiscordChannel NewChannel = await Guild.CreateVoiceChannelAsync(Name, Guild.GetChannel(CCategory.VoiceChannels), null, CreateVoiceChannel.UserLimit);
+
+			await Member.ModifyAsync(x => x.VoiceChannel = NewChannel);
+		}
+		else if (Args.Before?.Channel != null && IsTempVoice(Args.Before.Channel))
+		{
+			await Args.Before.Channel.DeleteAsync();
+		}
+	}
+	
 	private static async Task Commands_OnCommandErrored(CommandsNextExtension Sender, CommandErrorEventArgs Args)
 	{
 		if (Args.Exception is ArgumentException or DSharpPlus.CommandsNext.Exceptions.ChecksFailedException)
@@ -123,7 +168,8 @@ public static class CInvaderZim
 			// TODO: Handle more cases here
 			if (CanModerate(Args.Context))
 			{
-				if (Args.Command?.Name == "ban")
+				// TODO: Revisit this
+				if (Args.Command?.Name is "ban" or "kick")
 				{
 					await Args.Context.RespondAsync("I can't find a member with such username or ID!");
 				}
@@ -137,6 +183,7 @@ public static class CInvaderZim
 		{
 			StringPrefixes = [Prefix],
 			
+			IgnoreExtraArguments = true,
 			EnableMentionPrefix = false,
 			EnableDms = false,
 			
@@ -153,7 +200,6 @@ public static class CInvaderZim
 	
 	private static async Task StartStatusRotation(DiscordClient Sender)
 	{
-		// TODO: See if custom emoji can be used here
 		DiscordEmoji WaffleEmoji = DiscordEmoji.FromName(Sender, ":waffle:");
 		DiscordEmoji MonsterEmoji = DiscordEmoji.FromName(Sender, ":cocktail:");
 		DiscordEmoji ConquestEmoji = DiscordEmoji.FromName(Sender, ":earth_americas:");
