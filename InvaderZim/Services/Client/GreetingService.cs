@@ -34,6 +34,9 @@ public class CGreetingService
 
 		DiscordChannel WelcomeChannel = Args.Guild.GetChannel(CChannel.Welcome);
 		await WelcomeChannel.SendMessageAsync(Embed);
+
+		DiscordRole MemberRole = Args.Guild.GetRole(CRole.Member);
+		await Args.Member.GrantRoleAsync(MemberRole);
 	}
 	
 	private async Task Client_OnGuildMemberRemoved(DiscordClient Sender, GuildMemberRemoveEventArgs Args)
