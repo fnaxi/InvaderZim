@@ -12,6 +12,8 @@ namespace InvaderZim.Commands;
 
 public class CModerationCommands : BaseCommandModule
 {
+	// TODO: log command (audit log) (only mute/unmute/kick/ban/delete_msg)
+	
 	[Command("mute")]
 	[Description("Mutes the specified member")]
 	public async Task Mute(CommandContext Context, 

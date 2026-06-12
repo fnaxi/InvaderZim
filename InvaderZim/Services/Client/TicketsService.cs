@@ -47,7 +47,7 @@ public class CTicket
 		DiscordChannel Channel = Guild.GetChannel(ChannelId);
 		
 		await Channel.ModifyAsync(a => a.Name = $"{Name}{ClosedSuffix}");
-		await Channel.SendMessageAsync($"The ticket was closed by {ClosedByUser.Mention} ({ClosedByUser.Id}) \n\n Reason: {Reason}");
+		await Channel.SendMessageAsync($"The ticket was closed by {ClosedByUser.Mention} ({ClosedByUser.Id})\n\nReason: {Reason}");
 		
 		bClosed = true;
 	}

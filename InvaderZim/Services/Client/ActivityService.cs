@@ -20,7 +20,7 @@ public class CActivityService
 	{
 		DiscordEmoji WaffleEmoji = DiscordEmoji.FromName(Sender, ":waffle:");
 		DiscordEmoji MonsterEmoji = DiscordEmoji.FromName(Sender, ":coffee:");
-		DiscordEmoji ConquestEmoji = DiscordEmoji.FromName(Sender, ":map:");
+		DiscordEmoji ConquestEmoji = DiscordEmoji.FromName(Sender, ":crossed_swords:");
 
 		const UInt16 UpdateTime = 30;
 		List<string> Statuses =

@@ -7,6 +7,7 @@ using DSharpPlus.CommandsNext.Attributes;
 using DSharpPlus.Entities;
 using InvaderZim.ID;
 using InvaderZim.Misc;
+using InvaderZim.Services.Client;
 
 namespace InvaderZim.Commands;
 
@@ -14,22 +15,29 @@ public class CMiscCommands : BaseCommandModule
 {
 	[Command("help")]
 	[Description("Shows a list of available commands")]
-	public async Task Help(CommandContext Context,
-		[Description("The user to look up. Defaults to yourself if left blank")] DiscordMember? Member = null)
+	public async Task Help(CommandContext Context)
 	{
-		DiscordEmbedBuilder Embed = new DiscordEmbedBuilder()
-		{
-			Title = $"Help Menu {CEmoji.BmoDance}",
-			Description = "Some sick help text",
-			Color = YellowGreen
-		};
-		// TODO: Help command
-		
 		Debug.Assert(Context.Member != null);
-		Embed.WithFooter($"Requested by {Context.Member.DisplayName}", Context.Member.AvatarUrl);
-		Embed.WithTimestamp(DateTime.UtcNow);
 		
-		await Context.RespondAsync(Embed);
+		// TODO: Help command
+
+		DiscordEmbedBuilder Embed = CHelpMenuService.GetMainMenuEmbed(Context.Member);
+		List<DiscordSelectComponentOption> Options = new List<DiscordSelectComponentOption>
+		{
+			new("Choose a Category...", "choose", "", true, emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Context.Client, ":pushpin:"))),
+			
+			new("Main Menu", "main", "Go back to the main menu.", emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Context.Client, ":house:"))),
+			new("Moderation", "mod", "Ban, kick, mute and purge/prune commands.", emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Context.Client, ":shield:"))),
+			new("Misc & Utilities", "misc", "Misc commands and utilities.", emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Context.Client, ":gear:"))),
+			new("Entertain", "entertain", "Entertain commands.", emoji: new DiscordComponentEmoji(DiscordEmoji.FromName(Context.Client, ":tada:")))
+		};
+		DiscordSelectComponent Dropdown = new DiscordSelectComponent($"SID_HelpMenu_{Context.Member.Id}", "Select a category...", Options);
+
+		DiscordMessageBuilder Message = new DiscordMessageBuilder();
+		Message.AddEmbed(Embed);
+		Message.AddComponents(Dropdown);
+		
+		await Context.RespondAsync(Message);
 	}
 	
 	[Command("info")]

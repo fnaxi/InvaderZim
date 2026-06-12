@@ -26,6 +26,7 @@ public class CInvaderZim
 	private static CColorRolesService ColorRolesService = null!;
 	private static CModerationLogService ModerationLogService = null!;
 	public  static CTicketsService TicketsService = null!;
+	public  static CHelpMenuService HelpMenuService = null!;
 	
 	/*----------------------------------------------------------------------------
 		System client services
@@ -74,6 +75,7 @@ public class CInvaderZim
 		ColorRolesService = new CColorRolesService(Client);
 		ModerationLogService = new CModerationLogService(Client);
 		TicketsService = new CTicketsService(Client);
+		HelpMenuService = new CHelpMenuService(Client);
 		
 		// Client.System
 		ConnectionStatusService = new CConnectionStatusService(Client);
