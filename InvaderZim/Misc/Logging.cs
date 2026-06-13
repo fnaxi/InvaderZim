@@ -23,6 +23,8 @@ public struct SLogVerbosityInfo()
 // TODO: Move to Microsoft.Extensions.Logging
 public static class CLog
 {
+	public const LogLevel MinimumLogLevel = LogLevel.Information;
+	
 	// public static void LogCritical(string Text) { Log(LogLevel.Critical, Text); }
 	public static void LogError(string Text) { Log(LogLevel.Error, Text); }
 	public static void LogWarning(string Text) { Log(LogLevel.Warning, Text); }
@@ -38,7 +40,7 @@ public static class CLog
 	/** Logs a message to console. */
 	private static void Log(LogLevel LogVerbosity, string Message)
 	{
-		if (LogVerbosity < CInvaderZim.MinimumLogLevel) return;
+		if (LogVerbosity < MinimumLogLevel) return;
 		
 		if (!VerbosityInfo.TryGetValue(LogVerbosity, out SLogVerbosityInfo CurrentVerbosityInfo))
 		{

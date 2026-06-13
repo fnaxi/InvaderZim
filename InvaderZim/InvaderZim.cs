@@ -4,6 +4,7 @@ using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using InvaderZim.Commands;
 using InvaderZim.Config;
+using InvaderZim.Misc;
 using InvaderZim.Services.Client;
 using InvaderZim.Services.Client.System;
 using InvaderZim.Services.Commands;
@@ -11,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace InvaderZim;
 
-public class CInvaderZim
+public abstract class CInvaderZim
 {
 	private static DiscordClient Client = null!;
 	private static CommandsNextExtension Commands { get; set; } = null!;
@@ -25,8 +26,8 @@ public class CInvaderZim
 	private static CActivityService ActivityService = null!;
 	private static CColorRolesService ColorRolesService = null!;
 	private static CModerationLogService ModerationLogService = null!;
-	public  static CTicketsService TicketsService = null!;
-	public  static CHelpMenuService HelpMenuService = null!;
+	public static CTicketsService TicketsService = null!;
+	public static CHelpMenuService HelpMenuService = null!;
 	
 	/*----------------------------------------------------------------------------
 		System client services
@@ -37,8 +38,6 @@ public class CInvaderZim
 		Commands Services
 	----------------------------------------------------------------------------*/
 	private static CCommandErrorsService CommandErrorsService = null!;
-	
-	public const LogLevel MinimumLogLevel = LogLevel.Information;
 	
 	public static async Task Main()
 	{
