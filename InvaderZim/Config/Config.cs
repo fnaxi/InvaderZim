@@ -6,16 +6,12 @@ using Newtonsoft.Json;
 
 namespace InvaderZim.Config;
 
-public class CConfig(string InToken, string InPrefix)
+public class CConfig(string InToken)
 {
 	public string Token = InToken;
-	public string Prefix = InPrefix;
-}
-
-public abstract class CConfigParser
-{
+	public const string Prefix = "gir ";
+	
 	private const string Name = "Config.json";
-
 	public static CConfig Parse() // TODO: Move IDs to Config.json
 	{
 		StreamReader Stream = new StreamReader(Name);
@@ -24,11 +20,11 @@ public abstract class CConfigParser
 
 		CConfig? Config = JsonConvert.DeserializeObject<CConfig>(Json);
 		Debug.Assert(Config != null, nameof(Config) + " != null");
-		Debug.Assert(IsTextValid(Config.Token) && IsTextValid(Config.Prefix), "Config was not parsed properly or it didn't set required fields!");
+		Debug.Assert(IsTextValid(Config.Token), "Config was not parsed properly or it didn't set required fields!");
 		
 		LogInfo("Parsed config");
 		LogDebug($"Token: {Config.Token}");
-		LogInfo($"Prefix: '{Config.Prefix}'");
+		LogInfo($"Prefix: '{Prefix}'");
 		
 		return Config;
 	}

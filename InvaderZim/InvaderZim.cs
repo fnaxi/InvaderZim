@@ -20,14 +20,17 @@ public abstract class CInvaderZim
 	/*----------------------------------------------------------------------------
 		Client services
 	----------------------------------------------------------------------------*/
-	private static CTemporaryVoicesService TempVoicesService = null!;
 	private static CGreetingService GreetingService = null!;
 	private static CTalkingService TalkingService = null!;
 	private static CActivityService ActivityService = null!;
+	
+	private static CHelpMenuService HelpMenuService = null!;
+	private static CTemporaryVoicesService TempVoicesService = null!;
+	private static CTicketsService TicketsService = null!;
 	private static CColorRolesService ColorRolesService = null!;
+	
 	private static CModerationLogService ModerationLogService = null!;
-	public static CTicketsService TicketsService = null!;
-	public static CHelpMenuService HelpMenuService = null!;
+	private static CAutoModerationService AutoModerationService = null!;
 	
 	/*----------------------------------------------------------------------------
 		System client services
@@ -41,7 +44,7 @@ public abstract class CInvaderZim
 	
 	public static async Task Main()
 	{
-		CConfig Config = CConfigParser.Parse();
+		CConfig Config = CConfig.Parse();
 		DiscordConfiguration DisConfig = new DiscordConfiguration
 		{
 			Intents = DiscordIntents.All,
@@ -57,7 +60,7 @@ public abstract class CInvaderZim
 
 		Client = new DiscordClient(DisConfig);
 		
-		SetupCommands(Config.Prefix);
+		SetupCommands(CConfig.Prefix);
 		SetupServices();
 
 		await Client.ConnectAsync();
@@ -67,14 +70,17 @@ public abstract class CInvaderZim
 	private static void SetupServices()
 	{
 		// Client
-		TempVoicesService = new CTemporaryVoicesService(Client);
 		GreetingService = new CGreetingService(Client);
 		TalkingService = new CTalkingService(Client);
 		ActivityService = new CActivityService(Client);
-		ColorRolesService = new CColorRolesService(Client);
-		ModerationLogService = new CModerationLogService(Client);
-		TicketsService = new CTicketsService(Client);
+
 		HelpMenuService = new CHelpMenuService(Client);
+		TempVoicesService = new CTemporaryVoicesService(Client);
+		TicketsService = new CTicketsService(Client);
+		ColorRolesService = new CColorRolesService(Client);
+		
+		ModerationLogService = new CModerationLogService(Client);
+		AutoModerationService = new CAutoModerationService(Client);
 		
 		// Client.System
 		ConnectionStatusService = new CConnectionStatusService(Client);

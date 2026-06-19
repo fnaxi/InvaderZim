@@ -1,6 +1,7 @@
 // CopyRight https://github.com/fnaxi. All Rights Reserved.
 
 using System.Diagnostics;
+using DSharpPlus;
 using DSharpPlus.CommandsNext;
 using DSharpPlus.CommandsNext.Attributes;
 using InvaderZim.ID;
@@ -15,7 +16,7 @@ public class CTicketCommands : BaseCommandModule
 	[Description("Opens the specified ticket")]
 	public async Task Open(CommandContext Context)
 	{
-		if (!CanModerate(Context))
+		if (!CanModerate(Context.Member))
 		{
 			await NoRights(Context);
 			return;
@@ -26,7 +27,7 @@ public class CTicketCommands : BaseCommandModule
 			return;
 		}
 
-		CTicket? Ticket = CInvaderZim.TicketsService.Tickets.Find(t => t.ChannelId == Context.Channel.Id);
+		CTicket? Ticket = CTicketsService.Tickets.Find(t => t.ChannelId == Context.Channel.Id);
 		Debug.Assert(Ticket != null);
 
 		await Ticket.Open(Context.Guild, Context.User);
@@ -49,7 +50,7 @@ public class CTicketCommands : BaseCommandModule
 			return;
 		}
 
-		CTicket? Ticket = CInvaderZim.TicketsService.Tickets.Find(t => t.ChannelId == Context.Channel.Id);
+		CTicket? Ticket = CTicketsService.Tickets.Find(t => t.ChannelId == Context.Channel.Id);
 		Debug.Assert(Ticket != null);
 
 		await Ticket.Close(Context.Guild, Context.User, Reason);
@@ -57,23 +58,24 @@ public class CTicketCommands : BaseCommandModule
 	
 	[Command("delete")]
 	[Description("Deletes the specified ticket")]
+	[RequirePermissions(Permissions.Administrator)]
 	public async Task Delete(CommandContext Context,
 		[Description("The reason of deleting the ticket")] string Reason = "No reason provided")
 	{
-		if (!CanModerate(Context))
+		/*if (!CanModerate(Context.Member))
 		{
 			await NoRights(Context);
 			return;
-		}
+		}*/
 		if (!CTicketsService.IsTicketChannel(Context.Channel))
 		{
 			await Context.RespondAsync($"This command can only be invoked in a ticket channel! {CEmoji.GirBlep}");
 			return;
 		}
 		
-		CTicket? Ticket = CInvaderZim.TicketsService.Tickets.Find(t => t.ChannelId == Context.Channel.Id);
+		CTicket? Ticket = CTicketsService.Tickets.Find(t => t.ChannelId == Context.Channel.Id);
 		Debug.Assert(Ticket != null);
 
-		await CInvaderZim.TicketsService.DeleteTicket(Context.Guild, Ticket);
+		await CTicketsService.DeleteTicket(Context.Guild, Ticket);
 	}
 }

@@ -8,26 +8,17 @@ using InvaderZim.ID;
 
 namespace InvaderZim.Services.Client;
 
-public class CTicket
+public class CTicket(string InName, Int32 InId, UInt64 InChannelId, UInt64 InGuildId, bool bInClosed)
 {
+	public readonly string Name = InName;
+	public readonly Int32 Id = InId;
+	public readonly UInt64 ChannelId = InChannelId;
+	public readonly UInt64 GuildId = InGuildId;
+	public bool bClosed = bInClosed;
+
 	public static readonly string Prefix = "メticket-";
 	public static readonly string ClosedSuffix = "-closed";
 	
-	public CTicket(string InName, Int32 InId, UInt64 InChannelId, UInt64 InGuildId, bool bInClosed)
-	{
-		Name = InName;
-		Id = InId;
-		ChannelId = InChannelId;
-		GuildId = InGuildId;
-		bClosed = bInClosed;
-	}
-	
-	public string Name;
-	public Int32 Id;
-	public UInt64 ChannelId;
-	public UInt64 GuildId;
-	public bool bClosed;
-
 	public async Task Open(DiscordGuild Guild, DiscordUser OpenedByUser)
 	{
 		if (!bClosed) return;
@@ -36,6 +27,7 @@ public class CTicket
 		DiscordChannel Channel = Guild.GetChannel(ChannelId);
 		
 		await Channel.ModifyAsync(a => a.Name = Channel.Name.Substring(0, Channel.Name.Length - ClosedSuffix.Length));
+		await Task.Delay(TimeSpan.FromSeconds(0.5));
 		await Channel.SendMessageAsync($"The ticket was re-opened by {OpenedByUser.Mention} ({OpenedByUser.Id})");
 	}
 	
@@ -47,6 +39,7 @@ public class CTicket
 		DiscordChannel Channel = Guild.GetChannel(ChannelId);
 		
 		await Channel.ModifyAsync(a => a.Name = $"{Name}{ClosedSuffix}");
+		await Task.Delay(TimeSpan.FromSeconds(0.5));
 		await Channel.SendMessageAsync($"The ticket was closed by {ClosedByUser.Mention} ({ClosedByUser.Id})\n\nReason: {Reason}");
 	}
 }
@@ -59,7 +52,7 @@ public class CTicketsService
 		Client.ComponentInteractionCreated += Client_OnComponentInteractionCreated;
 	}
 
-	public readonly List<CTicket> Tickets = new();
+	public static readonly List<CTicket> Tickets = [];
 
 	private async Task Client_OnGuildDownloadCompleted(DiscordClient Sender, GuildDownloadCompletedEventArgs Args)
 	{
@@ -80,8 +73,6 @@ public class CTicketsService
 					continue;
 				}
 				
-				// TODO: check there are no tickets with same ID
-				
 				bool bClosed = Channel.Name.Contains(CTicket.ClosedSuffix);
 				Tickets.Add(new CTicket(Channel.Name, ID, Channel.Id, Guild.Id, bClosed));
 			}
@@ -98,6 +89,8 @@ public class CTicketsService
 		{
 			case "SID_CreateTicket":
 			{
+				// TODO: split this case into methods
+				
 				Int32 Id = Tickets.Count + 1;
 				string Name = $"{CTicket.Prefix}{(Id):D4}";
 				DiscordChannel ModerationCategory = Args.Guild.GetChannel(CCategory.Moderation);
@@ -133,8 +126,6 @@ public class CTicketsService
 
 				DiscordMessage Message = await Channel.SendMessageAsync(MessageEmbed);
 				await Message.PinAsync();
-				
-				// TODO: split this case into methods
 
 				Tickets.Add(new CTicket(Name, Id, Channel.Id, Args.Guild.Id, false));
 				LogInfo($"Created new ticket ({Name}/{Id}, Channel/{Channel.Id}, Guild/{Args.Guild.Id})");
@@ -153,17 +144,12 @@ public class CTicketsService
 		}
 	}
 
-	public async Task DeleteTicket(DiscordGuild Guild, CTicket Ticket)
+	public static async Task DeleteTicket(DiscordGuild Guild, CTicket Ticket)
 	{
 		DiscordChannel Channel = Guild.GetChannel(Ticket.ChannelId);
 		await Channel.DeleteAsync();
 		
 		Tickets.Remove(Ticket);
-	}
-	
-	private List<CTicket> GetTicketsFromGuild(DiscordGuild Guild)
-	{
-		return Tickets.Where(t => t.GuildId == Guild.Id).ToList();
 	}
 
 	public static bool IsTicketChannel(DiscordChannel Channel)

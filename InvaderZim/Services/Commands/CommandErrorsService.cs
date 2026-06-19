@@ -18,7 +18,7 @@ public class CCommandErrorsService
 		if (Args.Exception is ArgumentException or DSharpPlus.CommandsNext.Exceptions.ChecksFailedException)
 		{
 			// TODO: Handle more cases here
-			if (CanModerate(Args.Context))
+			if (CanModerate(Args.Context.Member))
 			{
 				// TODO: Revisit this
 				if (Args.Command?.Name is "ban" or "kick")

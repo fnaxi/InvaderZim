@@ -25,7 +25,7 @@ public class CManagementCommands : BaseCommandModule
 	}
 	
 	[Group("send")]
-	public class CSendCommands : BaseCommandModule
+	public class CSend : BaseCommandModule
 	{
 		[Command("rules")]
 		[Description("Sends rules message")]
@@ -41,27 +41,30 @@ public class CManagementCommands : BaseCommandModule
 			{
 				Title = ":books: SERVER RULES :books:",
 				Description = 
-					$"Joining the server implies your agreement to the rules and that you are older than 16 years old (according to the PEGI rating in the [Steam](https://store.steampowered.com))" +
-					$" {CEmoji.Alien}" +
+					$"Joining the server implies your agreement to the rules and that you are older than 16 years old (according to the PEGI rating in the [Steam](https://store.steampowered.com)) {CEmoji.Alien}" +
 					$"\n### 1. TALKING STUFF {CEmoji.GirDress}" +
-					$"\n1.1. No mean stuff. Don’t be mean or bully people / bots." +
-					$"\n\n1.2. No hate speech, racism, or yucky discrimination. Gir likes everyone! Even the Earth pigs in some way." +
-					$"\n\n1.3. Do not send repeated messages, images, or @mentions. This includes excessive use of CAPS LOCK, emojis, or text walls that disrupt conversation." +
-					$"\n\n1.4. Post content in the correct channels. Read the channel descriptions to understand their purpose." +
-					$"\n\n1.5. NFSW content is forbidden." +
-					$"\n\n1.6. Keep conversations primarily in US English so the moderation team can effectively keep the community safe." +
+					$"\n* 1.1. No mean stuff. Don’t be mean or bully people / bots." +
+					$"\n\n* 1.2. No hate speech, racism, or yucky discrimination. Gir likes everyone! Even the Earth pigs in some way." +
+					$"\n\n* 1.3. Though extreme bad language is allowed, profanity to abuse or harass other members will not be tolerated." +
+					$"\n\n* 1.4. Do not send repeated messages, images, or @mentions. This includes excessive use of CAPS LOCK, emojis, or text walls that disrupt conversation." +
+					$"\n\n* 1.5. Post content in the correct channels. Read the channel descriptions to understand their purpose." +
+					$"\n\n* 1.6. NFSW content is forbidden." +
+					$"\n\n* 1.7. Keep conversations primarily in US English so the moderation team can effectively keep the community safe." +
 					$"\n### 2. SAFETY {CEmoji.BmoDance}" +
-					$"\n2.1. Pinging {AdminRole.Mention} or {ModeratorRole.Mention} is forbidden if used for no good reason." +
-					$"\n\n2.2. No doxxing. Sharing anyone’s private personal information (real name, location, photos, etc.) is forbidden." +
-					$"\n\n2.3. No unauthorized promotion. Do not DM members or post in any channels to advertise your own server, social media, products, or etc without permission from an Admin" +
-					$"\n\n2.4. Do not share links to pirated software, cheats, or malicious websites/viruses." +
-					$"\n\n2.5. All members must adhere to the [Community Guidelines](https://discord.com/guidelines) and [Terms of Service](https://discord.com/guidelines)." +
+					$"\n* 2.1. Pinging {AdminRole.Mention} or {ModeratorRole.Mention} is forbidden if used for no good reason." +
+					$"\n\n* 2.2. No doxxing. Sharing anyone’s private personal information (real name, location, photos, etc.) is forbidden." +
+					$"\n\n* 2.3. Do not change your name, profile picture or status to trick people into thinking you are another member, moderator or administrator." +
+					$"\n\n* 2.4. No unauthorized promotion. Do not DM members or post in any channels to advertise your own server, social media, products, or etc without permission from an Admin" +
+					$"\n\n* 2.5. Do not post ANY ai-generated content. This includes shit text, crappy images, videos, and code." +
+					$"\n\n* 2.6. Do not post links to any short-video platforms. Gir hates that so will automatically delete them and issue a grim-reap if they are posted." +
+					$"\n\n* 2.7. Do not share links to pirated software, cheats, or malicious websites/viruses." +
+					$"\n\n* 2.8. All members must adhere to the [Community Guidelines](https://discord.com/guidelines) and [Terms of Service](https://discord.com/guidelines)." +
 					$"\n### REMARKS {CEmoji.GirDance}" +
-					$"\n~ Violations of the rules may result in warnings, temporary mutes, or permanent bans depending on severity and frequency of the offense." +
-					$"\n\n~ Any attempt to circumvent the rules will result in a ban." +
-					$"\n\n~ Moderators may issue penalties outside the rules if it helps maintain the order on the server." +
-					$"\n\n~ If you witness a rule being broken, please report it using {TicketChannel.Mention}" +
-					$"\n\nNow go eat some waffles! 🧇 You've made it this far xD",
+					$"\n> * *Violations of the rules may result in warnings, temporary mutes, or permanent bans depending on severity and frequency of the offense.*" +
+					$"\n\n> * *Any attempt to circumvent the rules will result in a ban.*" +
+					$"\n\n> * *Moderators may issue penalties outside the rules if it helps maintain the order on the server.*" +
+					$"\n\n> * *If you witness a rule being broken, please report it using {TicketChannel.Mention}*" +
+					$"\n\n**Now go eat some waffles! 🧇 You've made it this far xD**",
 				Color = YellowGreen
 			};
 			

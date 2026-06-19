@@ -26,14 +26,6 @@ public static class CCommandUtils
 		await Context.Channel.SendMessageAsync(Embed);
 	}
 	
-	public static bool CanModerate(CommandContext Context)
-	{
-		Debug.Assert(Context.Member != null);
-		bool bAdmin = Context.Member.Permissions.HasFlag(Permissions.Administrator);
-
-		return bAdmin || Context.Member.Roles.Any(role => role.Id is CRole.Admin or CRole.Moderator);
-	}
-
 	public static bool SentInBotChannel(CommandContext Context)
 	{
 		return Context.Channel.Id is not (CChannel.BotChat or CChannel.Test);

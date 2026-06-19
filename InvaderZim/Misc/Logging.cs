@@ -32,11 +32,6 @@ public static class CLog
 	public static void LogDebug(string Text) { Log(LogLevel.Debug, Text); }
 	public static void LogTrace(string Text) { Log(LogLevel.Trace, Text); }
 
-	public static void Status(Int32 ExitCode, string Text)
-	{
-		Log(ExitCode == 0 ? LogLevel.Information : LogLevel.Error, Text);
-	}
-
 	/** Logs a message to console. */
 	private static void Log(LogLevel LogVerbosity, string Message)
 	{
@@ -50,7 +45,7 @@ public static class CLog
 		string Timestamp = DateTimeOffset.Now.ToString("MMM dd yyyy - hh:mm:ss tt");
 		Int32 ThreadId = Environment.CurrentManagedThreadId;
 		string Thread = $"{ThreadId}".PadRight(3);
-		string Category = $"{Thread} /InvaderZim".PadRight(17);
+		string Category = $"{Thread} /Gir".PadRight(17);
 		
 		Console.Write($"[{Timestamp}] [{Category}] ");
 			

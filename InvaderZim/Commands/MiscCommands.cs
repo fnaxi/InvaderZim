@@ -19,7 +19,7 @@ public class CMiscCommands : BaseCommandModule
 	{
 		Debug.Assert(Context.Member != null);
 		
-		DiscordEmbedBuilder Embed = CHelpMenuService.GetMainMenuEmbed(Context.Member);
+		DiscordEmbedBuilder Embed = CHelpMenuService.MakeMainMenuEmbed(Context.Member);
 		List<DiscordSelectComponentOption> Options = new List<DiscordSelectComponentOption>
 		{
 			new("Choose a Category...", "SID_Choose", 
@@ -131,7 +131,7 @@ public class CMiscCommands : BaseCommandModule
 	}
 
 	[Command("shutdown")]
-	[Description("Shuts down the bot if it's running currently")]
+	[Description("Shuts down the bot")]
 	[RequireUserPermissions(Permissions.Administrator)]
 	public async Task Shutdown(CommandContext Context)
 	{

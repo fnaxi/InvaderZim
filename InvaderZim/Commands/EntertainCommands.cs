@@ -9,19 +9,23 @@ namespace InvaderZim.Commands;
 
 public class CEntertainCommands : BaseCommandModule
 {
-	[Command("waffles")]
-	[Description("Gifts zim some tasty waffles to eat")]
-	public async Task Waffles(CommandContext Context)
+	[Group("feed")]
+	public class CFeed : BaseCommandModule
 	{
-		Debug.Assert(Context.Member != null);
-		await Context.RespondAsync($"{Context.Member.Mention} {RandomString(CQuote.Waffles)}");
-	}
+		[Command("waffles")]
+		[Description("Gifts zim some tasty waffles to eat")]
+		public async Task Waffles(CommandContext Context)
+		{
+			Debug.Assert(Context.Member != null);
+			await Context.RespondAsync($"{Context.Member.Mention} {RandomString(CQuote.Waffles)}");
+		}
 	
-	[Command("tacos")]
-	[Description("Gifts zim some tacos to eat")]
-	public async Task Tacos(CommandContext Context)
-	{
-		Debug.Assert(Context.Member != null);
-		await Context.RespondAsync($"{Context.Member.Mention} {RandomString(CQuote.Tacos)}");
+		[Command("tacos")]
+		[Description("Gifts zim some tacos to eat")]
+		public async Task Tacos(CommandContext Context)
+		{
+			Debug.Assert(Context.Member != null);
+			await Context.RespondAsync($"{Context.Member.Mention} {RandomString(CQuote.Tacos)}");
+		}
 	}
 }

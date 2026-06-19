@@ -14,9 +14,9 @@ public class CHelpMenuService
 		Client.ComponentInteractionCreated += Client_OnComponentInteractionCreated;
 	}
 
-	private const string HelpTitlePrefix = "Gir |";
+	private const string HelpTitlePrefix = $"{CEmoji.GirDance} Gir |";
 
-	public static DiscordEmbedBuilder GetMainMenuEmbed(DiscordMember Member)
+	public static DiscordEmbedBuilder MakeMainMenuEmbed(DiscordMember Member)
 	{
 		DiscordEmbedBuilder Embed = new DiscordEmbedBuilder()
 		{
@@ -63,6 +63,7 @@ public class CHelpMenuService
 			"SID_Mod" => new DiscordEmbedBuilder(Embed)
 				.WithTitle($"{HelpTitlePrefix} Moderation Commands :shield:")
 				.WithDescription(
+					"**NOTE:** These commands can only be executed by moderators.\n\n" +
 					"• `mute <user> ?<reason>` - Mutes (timeouts) a member.\n" +
 					"• `unmute <user>` - Removes a timeout from a member.\n" +
 					"• `reap <user> ?<reason>` - Grim-reaps (warns) the specified member. Automatically issues a ban after reaching 3 warnings.\n" +
@@ -86,8 +87,8 @@ public class CHelpMenuService
 			"SID_Entertain" => new DiscordEmbedBuilder(Embed)
 				.WithTitle($"{HelpTitlePrefix} Entertainment Commands :tada:")
 				.WithDescription(
-					"• `waffles` - Gives gir some tasty waffles to eat.\n"+ 
-				    "• `tacos` - Gives gir some tacos to eat.")
+					"• `feed waffles` - Gives gir some tasty waffles :waffle: to eat.\n"+ 
+				    "• `feed tacos` - Gives gir some tacos :taco: to eat.")
 				.WithColor(DiscordColor.Yellow),
 			
 			"SID_Ticket" => new DiscordEmbedBuilder(Embed)
