@@ -5,24 +5,24 @@
 
 <div align="center">
 
-<a href="https://github.com/fnaxi/InvaderZim">
+<a href="https://github.com/fnaxi/Gir">
 	<img src="Images/Logo.png" alt="Logo" width="100" height="100">
 </a>
 
-<h3 align="center"> Invader Zim </h3>
+<h3 align="center"> Gir </h3>
 <p align="center">
 	C# Discord bot
 	<br />
-	<a href="https://github.com/fnaxi/InvaderZim/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
+	<a href="https://github.com/fnaxi/Gir/issues/new?labels=bug&template=bug-report---.md">Report Bug</a>
 	&middot;
-	<a href="https://github.com/fnaxi/InvaderZim/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
+	<a href="https://github.com/fnaxi/Gir/issues/new?labels=enhancement&template=feature-request---.md">Request Feature</a>
 </p>
 
 </div>
 
 ## About
 
-Invader zim - is all-in-one Discord bot built in C# designed to help moderate and manage a community.
+Gir - is all-in-one Discord bot built in C# designed to help moderate and manage a community.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
@@ -31,17 +31,17 @@ Invader zim - is all-in-one Discord bot built in C# designed to help moderate an
 ### 1. Clone the Repository
 
 ```
-git clone https://github.com/fnaxi/InvaderZim.git InvaderZim
-cd InvaderZim
+git clone https://github.com/fnaxi/Gir.git Gir
+cd Gir
 ```
 
 ### 2. Set bot token
 
-Copy `InvaderZim/Config/Config.json` to `InvaderZim/bin/{Debug/Release}/net9.0/` and change field `Token` to the token you want to use.
+Copy `Gir/Config/Config.json` to `Gir/bin/{Debug/Release}/net9.0/` and change field `Token` to the token you want to use.
 
 ### 3. Open solution
 
-Open `InvaderZim.sln` and build all the projects.
+Open `Gir.sln` and build all the projects.
 
 <p align="right">(<a href="#readme-top">back to top</a>)</p>
 
